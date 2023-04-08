@@ -10,7 +10,8 @@ type NetworkForm = {
 };
 
 export type NetworkPostsProps = {
-    date: Date,
+    id: number,
+    created_datetime: Date,
     username: string,
 } & NetworkForm;
 
@@ -85,7 +86,9 @@ export function Network() {
 
         </section>
         {networkPosts.length > 0 ? (
-            <Posts post={networkPosts[0]} />
+            networkPosts.map((post) => (
+                <Posts post={post} key={post.id} />
+            ))
         ) : null}
       </main>
     </>
