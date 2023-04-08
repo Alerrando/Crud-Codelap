@@ -7,10 +7,10 @@ import { RootState } from "../../redux/store";
 
 type PostsProps = {
   post: NetworkPostsProps;
+  setEditPost: (editPost: NetworkPostsProps) => void;
 };
 
-export function Posts({ post }: PostsProps) {
-  const { username } = useSelector((state: RootState) => state.crud)
+export function Posts({ post, setEditPost }: PostsProps) {
 
   return (
     <div className="w-3/4 md:w-[47rem] h-[316px] bg-[#fff] border border-[#999] rounded-2xl">
@@ -25,7 +25,7 @@ export function Posts({ post }: PostsProps) {
             className="cursor-pointer"
             color="white"
           />
-          <FiEdit size={22} className="cursor-pointer" color="white" />
+          <FiEdit size={22} className="cursor-pointer" color="white" onClick={() => setEditPost(post)} />
         </div>
       </header>
 

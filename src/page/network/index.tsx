@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../../redux/crudSlice";
 import { RootState } from "../../redux/store";
 import { Navigate } from "react-router-dom";
+import { Modal } from "../../components/modal";
 
 export type NetworkForm = {
   username?: string;
@@ -23,11 +24,13 @@ export function Network() {
   const dispatch = useDispatch();
   const { username } = useSelector((aciton: RootState) => aciton.crud)
   const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([]);
+  const [editPost, setEditPost] = useState<NetworkPostsProps>({} as NetworkPostsProps);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    setValue
   } = useForm<NetworkForm>();
 
   useEffect(() => {
@@ -39,6 +42,8 @@ export function Network() {
   if(username.length == 0){
     return <Navigate replace to="/login" />
   }
+
+  console.log(editPost)
 
   return (
     <>
@@ -100,13 +105,19 @@ export function Network() {
           </div>
         </section>
         {networkPosts.length > 0
-          ? networkPosts.map((post) => <Posts post={post} key={post.id} />)
+          ? networkPosts.map((post) => <Posts post={post} setEditPost={setEditPost} key={post.id} />)
           : null}
       </main>
+
+      {Object.keys(editPost).length > 0 ? (
+        <Modal editPost={editPost} />
+      ) : null}
     </>
   );
 
   function submit(event: any) {
     dispatch(createPost(event));
+    setValue("content", "")
+    setValue("title", "")
   }
 }
