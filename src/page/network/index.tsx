@@ -1,28 +1,42 @@
 import { ErrorMessage } from "@hookform/error-message";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Posts } from "../../components/posts";
 
 type NetworkForm = {
   title: string;
   content: string;
 };
 
+export type NetworkPostsProps = {
+    date: Date,
+    username: string,
+} & NetworkForm;
+
 export function Network() {
+    const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([])
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<NetworkForm>();
 
+  useEffect(() => {
+    axios.get("https://dev.codeleap.co.uk/careers/?format=json")
+    .then((response) => setNetworkPosts(response.data.results))
+  }, [])
+
   return (
     <>
-      <header className="w-screen h-auto bg-[#7695EC] py-7 px-9">
+      <header className="w-full h-auto bg-[#7695EC] py-7 px-9">
         <h1 className="text-white font-roboto font-bold text-[22px] leading-6">
           CodeLeap Network
         </h1>
       </header>
 
-      <main className="w-full h-auto p-6 flex flex-col gap-6 items-center justify-center">
+      <main className="w-full h-auto py-6 flex flex-col gap-6 items-center justify-center">
         <section className="w-3/4 md:w-[47rem] h-auto bg-[#fff] border border-[#999] rounded-2xl">
           <div className="p-6 py-6 flex flex-col gap-6">
             <h2 className="font-roboto font-bold text-[22px] leading-6">
@@ -68,7 +82,11 @@ export function Network() {
               </div>
             </form>
           </div>
+
         </section>
+        {networkPosts.length > 0 ? (
+            <Posts post={networkPosts[0]} />
+        ) : null}
       </main>
     </>
   );
