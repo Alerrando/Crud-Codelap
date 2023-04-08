@@ -19,17 +19,19 @@ export function Login() {
     formState: { errors, isValid },
   } = useForm<LoginForm>();
 
+  useEffect(() => {
+    const savedInfos = JSON.parse(localStorage.getItem('username') || "");
+    if(savedInfos.length > 0){
+      dispatch(addUsername(savedInfos));
+    }
+    
+  }, [])
+
+
   if(username.length > 0){
     return <Navigate replace to="/network" />
   }
 
-  useEffect(() => {
-    try{
-
-    } catch(err){
-      
-    }
-  }, [])
 
   return (
     <>
@@ -74,6 +76,11 @@ export function Login() {
   );
 
   function submit(event: any) {
+    localStorage.setItem(
+      'username',
+      JSON.stringify(event.username)
+    );
+    
     dispatch(addUsername(event.username));
   }
 
