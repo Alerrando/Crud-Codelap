@@ -20,11 +20,14 @@ export function Login() {
   } = useForm<LoginForm>();
 
   useEffect(() => {
-    const savedInfos = JSON.parse(localStorage.getItem('username') || "");
-    if(savedInfos.length > 0){
-      dispatch(addUsername(savedInfos));
+    try {
+      const savedInfos = JSON.parse(localStorage.getItem('username') || "");
+      if(savedInfos.length > 0){
+        dispatch(addUsername(savedInfos));
+      }
+    } catch (error) {
+      console.log(error)
     }
-    
   }, [])
 
 
