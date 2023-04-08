@@ -9,7 +9,6 @@ type LoginForm = {
 };
 
 export function Login() {
-  const { username } = useSelector((state: RootState) => state.crud);
   const dispatch = useDispatch();
   const {
     register,
@@ -39,14 +38,6 @@ export function Login() {
                   required: true,
                 })}
                 placeholder="Username"
-              />
-
-              <ErrorMessage errors={errors} name="username" />
-
-              <ErrorMessage
-                errors={errors}
-                name="username"
-                render={({ message }) => <p>{message}</p>}
               />
 
               <div className="w-full h-auto mt-2 flex items-center justify-end">
