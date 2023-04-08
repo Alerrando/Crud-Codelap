@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { NetworkForm } from '../page/network'
-import { postPosts } from '../actions'
+import { NetworkForm, NetworkPostsProps } from '../page/network'
+import { postPosts, updatePostPosts } from '../actions'
 
 export interface CrudState {
   username: string,
@@ -27,11 +27,17 @@ export const crudSlice = createSlice({
       }
 
       postPosts(newPost)
+    },
+
+    updatePost: (state, action: PayloadAction<NetworkPostsProps>) => {
+      const updatePost = action.payload
+
+      updatePostPosts(updatePost)
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addUsername, createPost } = crudSlice.actions
+export const { addUsername, createPost, updatePost } = crudSlice.actions
 
 export default crudSlice.reducer

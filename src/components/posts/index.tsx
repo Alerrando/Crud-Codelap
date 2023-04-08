@@ -2,8 +2,7 @@ import React from "react";
 import { NetworkPostsProps } from "../../page/network";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { deletePostPosts } from "../../actions";
 
 type PostsProps = {
   post: NetworkPostsProps;
@@ -24,6 +23,7 @@ export function Posts({ post, setEditPost }: PostsProps) {
             size={22}
             className="cursor-pointer"
             color="white"
+            onClick={() => deletePostPosts(post)}
           />
           <FiEdit size={22} className="cursor-pointer" color="white" onClick={() => setEditPost(post)} />
         </div>

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUsername } from "../../redux/crudSlice";
 import { Navigate } from 'react-router-dom'
 import { RootState } from "../../redux/store";
+import React, { useEffect } from 'react'
 
 type LoginForm = {
   username: string;
@@ -21,6 +22,14 @@ export function Login() {
   if(username.length > 0){
     return <Navigate replace to="/network" />
   }
+
+  useEffect(() => {
+    try{
+
+    } catch(err){
+      
+    }
+  }, [])
 
   return (
     <>

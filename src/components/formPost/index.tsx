@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { NetworkForm, NetworkPostsProps } from "../../page/network";
-import { createPost } from "../../redux/crudSlice";
+import { createPost, updatePost } from "../../redux/crudSlice";
 import { useDispatch } from "react-redux";
 
-type FormPost = {
+type FormPostProps = {
   titleForm: string;
   editPost?: NetworkPostsProps;
+  setEditPost?: (editPost: NetworkPostsProps) => void;
 };
 
-export function FormPost({ titleForm, editPost }: FormPost) {
+export function FormPost({ titleForm, editPost, setEditPost }: FormPostProps) {
   const dispatch = useDispatch();
 
   const {
@@ -18,6 +19,14 @@ export function FormPost({ titleForm, editPost }: FormPost) {
     formState: { errors, isValid },
     setValue,
   } = useForm<NetworkForm>();
+
+  useEffect(() => {
+    if(editPost != undefined){
+      setValue("title", `${editPost.title}`)
+      setValue("content", `${editPost.content}`)
+      setValue("username", `${editPost.username}`)
+    }
+  }, [])
 
   return (
     <div
@@ -73,15 +82,16 @@ export function FormPost({ titleForm, editPost }: FormPost) {
           ) : (
             <>
                 <button
-                className={`w-[6.9375rem] h-8 text-dark rounded-lg border border-[#000]`}
-                type="submit"
+                  className={`w-[6.9375rem] h-8 text-dark rounded-lg border border-[#000]`}
+                  type="button"
+                  onClick={() => handleCancelEditPost()}
                 >
                     Cancel
                 </button>
 
                 <button
-                className={`w-[6.9375rem] h-8 text-dark rounded-lg bg-[#47B960]`}
-                type="submit"
+                  className={`w-[6.9375rem] h-8 text-dark rounded-lg bg-[#47B960]`}
+                  type="submit"
                 >
                     Save
                 </button>
@@ -93,8 +103,19 @@ export function FormPost({ titleForm, editPost }: FormPost) {
   );
 
   function submit(event: any) {
-    dispatch(createPost(event));
+    if(editPost != undefined){
+      dispatch(createPost(event));
+    }
+    else{
+      dispatch(updatePost(event))
+    }
     setValue("content", "");
     setValue("title", "");
+  }
+
+  function handleCancelEditPost(){
+    if(setEditPost != undefined){
+      setEditPost({} as NetworkPostsProps)
+    }
   }
 }

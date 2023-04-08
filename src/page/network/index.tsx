@@ -26,13 +26,6 @@ export function Network() {
   const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([]);
   const [editPost, setEditPost] = useState<NetworkPostsProps>({} as NetworkPostsProps);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-    setValue
-  } = useForm<NetworkForm>();
-
   useEffect(() => {
     (async () => {
       setNetworkPosts(await getPosts());
@@ -61,7 +54,7 @@ export function Network() {
       </main>
 
       {Object.keys(editPost).length > 0 ? (
-        <Modal editPost={editPost} />
+        <Modal editPost={editPost} setEditPost={setEditPost} />
       ) : null}
     </>
   );
