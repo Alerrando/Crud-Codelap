@@ -1,22 +1,28 @@
-import { ErrorMessage } from "@hookform/error-message";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Posts } from "../../components/posts";
+import { getPosts } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost } from "../../redux/crudSlice";
+import { RootState } from "../../redux/store";
+import { Navigate } from "react-router-dom";
 
-type NetworkForm = {
+export type NetworkForm = {
+  username?: string;
   title: string;
   content: string;
 };
 
 export type NetworkPostsProps = {
-    id: number,
-    created_datetime: Date,
-    username: string,
+  id: number;
+  created_datetime: Date;
+  username: string;
 } & NetworkForm;
 
 export function Network() {
-    const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([])
+  const dispatch = useDispatch();
+  const { username } = useSelector((aciton: RootState) => aciton.crud)
+  const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([]);
 
   const {
     register,
@@ -25,9 +31,14 @@ export function Network() {
   } = useForm<NetworkForm>();
 
   useEffect(() => {
-    axios.get("https://dev.codeleap.co.uk/careers/?format=json")
-    .then((response) => setNetworkPosts(response.data.results))
-  }, [])
+    (async () => {
+      setNetworkPosts(await getPosts());
+    })();
+  }, []);
+
+  if(username.length == 0){
+    return <Navigate replace to="/login" />
+  }
 
   return (
     <>
@@ -44,7 +55,11 @@ export function Network() {
               What's on your mind?
             </h2>
 
-            <form className="grid gap-6" action="">
+            <form
+              className="grid gap-6"
+              action="POST"
+              onSubmit={handleSubmit(submit)}
+            >
               <div className="flex flex-col gap-2">
                 <label htmlFor="title">Title</label>
                 <input
@@ -83,14 +98,15 @@ export function Network() {
               </div>
             </form>
           </div>
-
         </section>
-        {networkPosts.length > 0 ? (
-            networkPosts.map((post) => (
-                <Posts post={post} key={post.id} />
-            ))
-        ) : null}
+        {networkPosts.length > 0
+          ? networkPosts.map((post) => <Posts post={post} key={post.id} />)
+          : null}
       </main>
     </>
   );
+
+  function submit(event: any) {
+    dispatch(createPost(event));
+  }
 }

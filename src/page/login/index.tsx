@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
 import { useDispatch, useSelector } from "react-redux";
 import { addUsername } from "../../redux/crudSlice";
+import { Navigate } from 'react-router-dom'
 import { RootState } from "../../redux/store";
 
 type LoginForm = {
@@ -9,12 +9,18 @@ type LoginForm = {
 };
 
 export function Login() {
+  const { username } = useSelector((aciton: RootState) => aciton.crud)
   const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginForm>();
+
+  if(username.length > 0){
+    return <Navigate replace to="/network" />
+  }
 
   return (
     <>
@@ -61,4 +67,5 @@ export function Login() {
   function submit(event: any) {
     dispatch(addUsername(event.username));
   }
+
 }

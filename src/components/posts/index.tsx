@@ -2,13 +2,16 @@ import React from "react";
 import { NetworkPostsProps } from "../../page/network";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import moment from "moment";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 type PostsProps = {
   post: NetworkPostsProps;
 };
 
 export function Posts({ post }: PostsProps) {
+  const { username } = useSelector((state: RootState) => state.crud)
+
   return (
     <div className="w-3/4 md:w-[47rem] h-[316px] bg-[#fff] border border-[#999] rounded-2xl">
       <header className="w-full h-auto flex flex-row items-center justify-between bg-[#7695EC] py-7 px-9 rounded-t-2xl">
@@ -38,7 +41,6 @@ export function Posts({ post }: PostsProps) {
   );
 
   function checkExceedLimit() {
-    debugger;
     let newDate = new Date();
     let differenceDate = Math.floor((newDate.getTime()-new Date(post.created_datetime).getTime())/(24*3600*1000))
 
