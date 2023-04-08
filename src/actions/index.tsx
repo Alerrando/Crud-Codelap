@@ -3,9 +3,17 @@ import { NetworkForm, NetworkPostsProps } from "../page/network";
 
 const url = 'https://dev.codeleap.co.uk/careers/'
 
-export async function getPosts(){
-    const res = await axios.get(`${url}?format=json`)
-    .then((response) => response.data.results)
+export async function getPosts(limit=10, offset=0){
+    let res:any= [];
+
+    if(offset == 0){
+        res = await axios.get(`${url}?format=json`)
+        .then((response) => response.data)
+    }else{
+        res = await axios.get(`${url}?limit=${limit}&offset=${offset}`)
+        .then((response) => response.data)
+    }
+
 
     return res;
 }

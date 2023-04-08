@@ -16,7 +16,7 @@ export function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<LoginForm>();
 
   useEffect(() => {

@@ -16,7 +16,7 @@ export function FormPost({ titleForm, editPost, setEditPost }: FormPostProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
     setValue,
   } = useForm<NetworkForm>();
 

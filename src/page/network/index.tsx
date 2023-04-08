@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Posts } from "../../components/posts";
 import { getPosts } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
-import { createPost } from "../../redux/crudSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Navigate } from "react-router-dom";
 import { Modal } from "../../components/modal";
 import { FormPost } from "../../components/formPost";
+import { Pagination } from "../../components/pagination";
 
 export type NetworkForm = {
   username?: string;
@@ -22,18 +21,25 @@ export type NetworkPostsProps = {
 } & NetworkForm;
 
 export function Network() {
-  const { username } = useSelector((aciton: RootState) => aciton.crud)
+  const { username } = useSelector((aciton: RootState) => aciton.crud);
   const [networkPosts, setNetworkPosts] = useState<NetworkPostsProps[]>([]);
-  const [editPost, setEditPost] = useState<NetworkPostsProps>({} as NetworkPostsProps);
+  const [editPost, setEditPost] = useState<NetworkPostsProps>(
+    {} as NetworkPostsProps
+  );
+  const postsPorPage = 10;
+  const [pageNumber, setPageNumber] = useState(0);
+  const [pageTotal, setPageTotal] = useState(0);
 
   useEffect(() => {
     (async () => {
-      setNetworkPosts(await getPosts());
+      const response = await getPosts(postsPorPage, postsPorPage * pageNumber);
+      setPageTotal(response.count);
+      setNetworkPosts(response.results);
     })();
-  }, []);
+  }, [pageNumber, networkPosts]);
 
-  if(username.length == 0){
-    return <Navigate replace to="/login" />
+  if (username.length == 0) {
+    return <Navigate replace to="/login" />;
   }
 
   return (
@@ -48,9 +54,33 @@ export function Network() {
         <section className="w-3/4 md:w-[47rem] h-auto bg-[#fff] border border-[#999] rounded-2xl">
           <FormPost titleForm="What's on your mind?" />
         </section>
-        {networkPosts.length > 0
-          ? networkPosts.map((post) => <Posts post={post} setEditPost={setEditPost} key={post.id} />)
-          : null}
+
+        <Pagination
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          pageTotal={pageTotal}
+        />
+
+        {networkPosts.length > 0 ? (
+          networkPosts.map((post) => (
+            <Posts post={post} setEditPost={setEditPost} key={post.id} />
+          ))
+        ) : (
+          <div
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            role="status"
+          >
+            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+              Loading...
+            </span>
+          </div>
+        )}
+
+        <Pagination
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          pageTotal={pageTotal}
+        />
       </main>
 
       {Object.keys(editPost).length > 0 ? (
@@ -58,5 +88,4 @@ export function Network() {
       ) : null}
     </>
   );
-
 }
